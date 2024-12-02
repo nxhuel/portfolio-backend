@@ -24,6 +24,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
         UserEntity userEntity = userRepository.findUser(username)
                 .orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe."));
 
+        // Verificar si el usuario está habilitado
+        if (!userEntity.isEnabled()) {
+            throw new UsernameNotFoundException("El usuario " + username + " no está habilitado.");
+        }
+
         // Convierte todo en un objeto que entiende spring security
         List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
-@PreAuthorize("denyAll()")
+//@PreAuthorize("denyAll()")
 public class PermissionController {
     @Autowired
     private PermissionServiceImpl permissionService;

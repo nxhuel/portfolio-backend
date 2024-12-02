@@ -23,11 +23,12 @@ public class UserEntity {
     private String password;
     private String description;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_user")
+    @JoinColumn(name = "id_portfolio")
     private PortfolioDataEntity portfolioData;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<ProjectEntity> projects = new ArrayList<>();
     // Atributos de spring security
+
     @Column(name = "is_enabled")
     private boolean isEnabled;
     @Column(name = "account_no_expired")

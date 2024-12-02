@@ -1,6 +1,8 @@
 package com.portfolio_personal.backend.service.Impl;
 
+import com.portfolio_personal.backend.persistence.entity.PermissionEntity;
 import com.portfolio_personal.backend.persistence.entity.RoleEntity;
+import com.portfolio_personal.backend.persistence.repository.PermissionRepository;
 import com.portfolio_personal.backend.persistence.repository.RoleRepository;
 import com.portfolio_personal.backend.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements IRoleService {
@@ -16,11 +20,14 @@ public class RoleServiceImpl implements IRoleService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private PermissionRepository permissionRepository;
+
     @Override
     public List<RoleEntity> getRoleList() {
         List<RoleEntity> roleList = roleRepository.findAll();
         if (roleList.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND , "No  existen roles creados");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No  existen roles creados");
         }
         return roleList;
     }
@@ -36,6 +43,11 @@ public class RoleServiceImpl implements IRoleService {
 
     @Override
     public RoleEntity createRole(RoleEntity role) {
+        Set<PermissionEntity> permissions = role.getPermissionList().stream()
+                .map(permission -> permissionRepository.findById(permission.getId())
+                        .orElseThrow(() -> new RuntimeException("Permission not found: " + permission.getId())))
+                .collect(Collectors.toSet());
+        role.setPermissionList(permissions);
         return roleRepository.save(role);
     }
 
@@ -44,10 +56,16 @@ public class RoleServiceImpl implements IRoleService {
         return roleRepository.findById(id)
                 .map(role -> {
                     role.setRoleEnum(updatedRole.getRoleEnum());
-                    role.setPermissionList(updatedRole.getPermissionList());
+                    Set<PermissionEntity> permissions = role.getPermissionList().stream()
+                            .map(permission -> permissionRepository.findById(permission.getId())
+                                    .orElseThrow(() -> new RuntimeException("Permission not found: " + permission.getId())))
+                            .collect(Collectors.toSet());
+                    role.setPermissionList(permissions);
                     return roleRepository.save(role);
                 })
-                .orElseThrow(() -> new IllegalArgumentException("Rol con ID " + id + " no encontado"));
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Rol con ID " + id + " no encontado"
+                ));
     }
 
     @Override
