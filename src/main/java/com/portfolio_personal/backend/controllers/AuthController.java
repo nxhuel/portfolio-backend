@@ -5,17 +5,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@PreAuthorize("denyAll()")
 public class AuthController {
 
     @GetMapping("/get")
-    @PreAuthorize("permitAll()")
     public String getHello() {
         return "Hello World - GET";
     }
 
     @PostMapping("/post")
-    @PreAuthorize("hasRole('ADMIN')")
     public String postHello() {
         return "Hello World - POST";
     }
@@ -26,7 +23,6 @@ public class AuthController {
     }
 
     @DeleteMapping("/delete")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public String deleteHello() {
         return "Hello World - DELETE";
     }

@@ -17,7 +17,7 @@ public class RoleController {
     private RoleServiceImpl roleService;
 
     @GetMapping("/roles")
-    @PreAuthorize("hasAuthority('READ')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RoleEntity>> getRoleList() {
         return ResponseEntity.ok(roleService.getRoleList());
     }

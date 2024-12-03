@@ -3,6 +3,7 @@ package com.portfolio_personal.backend.config;
 import com.portfolio_personal.backend.service.Impl.UserDetailServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,6 +32,25 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
+//    @Bean
+//    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+//        return httpSecurity
+//                .csrf(csrf -> csrf.disable())
+//                .httpBasic(Customizer.withDefaults())
+//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeHttpRequests(http -> {
+//                    // Configurar los endpoints publicos
+//                    http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
+//
+//                    // Cofnigurar los endpoints privados
+//                    http.requestMatchers(HttpMethod.POST, "/auth/post").hasAnyRole("ADMIN", "USER");
+//                    http.requestMatchers(HttpMethod.PUT, "/auth/put").hasAnyAuthority("READ");
+//
+//                    // Configurar el resto de endpoint - NO ESPECIFICADOS
+//                    http.anyRequest().denyAll();
+//                })
+//                .build();
+//    }
 
     // Proporciona el manejador de autenticación, que combina múltiples proveedores
     @Bean
@@ -42,8 +62,8 @@ public class SecurityConfig {
     @Bean
     public AuthenticationProvider authenticationProvider(UserDetailServiceImpl userDetailService) {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailService);
         provider.setPasswordEncoder(passwordEncoder());
+        provider.setUserDetailsService(userDetailService);
         return provider;
     }
 

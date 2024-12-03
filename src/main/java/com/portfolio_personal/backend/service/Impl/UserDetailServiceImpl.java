@@ -15,6 +15,7 @@ import java.util.List;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
+
     @Autowired
     private UserRepository userRepository;
 
@@ -37,8 +38,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
                 .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
 
         // Toma los permisos  de ese rol
-        userEntity.getRoleList().stream().
-                flatMap(role -> role.getPermissionList().stream())
+        userEntity.getRoleList().stream()
+                .flatMap(role -> role.getPermissionList().stream())
                 .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
 
         return new User(userEntity.getUsername(),

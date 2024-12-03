@@ -19,16 +19,11 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String username;
     private String password;
-    private String description;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_portfolio")
-    private PortfolioDataEntity portfolioData;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ProjectEntity> projects = new ArrayList<>();
-    // Atributos de spring security
 
+    // Atributos de spring security
     @Column(name = "is_enabled")
     private boolean isEnabled;
     @Column(name = "account_no_expired")
@@ -38,8 +33,15 @@ public class UserEntity {
     @Column(name = "credential_no_expired")
     private boolean credentialNoExpired;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
     private Set<RoleEntity> roleList = new HashSet<>();
 
+    // Atributos extras
+    private String description;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_portfolio")
+    private PortfolioDataEntity portfolioData;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ProjectEntity> projects = new ArrayList<>();
 }

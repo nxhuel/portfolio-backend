@@ -22,6 +22,4 @@ public class PortfolioDataEntity {
     private List<ExperienceEntity> experiences = new ArrayList<>();
     @OneToMany(mappedBy = "portfolio_data", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<SocialNetworksEntity> social_networks = new ArrayList<>();
-    @OneToMany(mappedBy = "portfolio_data", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<PublicationEntity> publications = new ArrayList<>();
 }

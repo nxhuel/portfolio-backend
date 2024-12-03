@@ -1,6 +1,8 @@
 package com.portfolio_personal.backend;
 
 import com.portfolio_personal.backend.persistence.entity.*;
+import com.portfolio_personal.backend.persistence.repository.PermissionRepository;
+import com.portfolio_personal.backend.persistence.repository.RoleRepository;
 import com.portfolio_personal.backend.persistence.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +19,7 @@ public class BackendApplication {
     }
 
     @Bean
-    CommandLineRunner init(UserRepository userRepository) {
+    CommandLineRunner init(PermissionRepository permissionRepository, RoleRepository roleRepository, UserRepository userRepository) {
         return args -> {
 //             Permissions
             PermissionEntity createPermission = PermissionEntity.builder()
@@ -28,16 +30,19 @@ public class BackendApplication {
                     .name("READ")
                     .build();
 
+            permissionRepository.saveAll(Set.of(createPermission, readPermission));
 //             Roles
             RoleEntity roleAdmin = RoleEntity.builder()
                     .roleEnum(RoleEnum.ADMIN)
                     .permissionList(Set.of(createPermission, readPermission))
                     .build();
 
-//            RoleEntity roleUser = RoleEntity.builder()
-//                    .roleEnum(RoleEnum.USER)
-//                    .permissionList(Set.of(readPermission))
-//                    .build();
+            RoleEntity roleUser = RoleEntity.builder()
+                    .roleEnum(RoleEnum.USER)
+                    .permissionList(Set.of(readPermission))
+                    .build();
+
+            roleRepository.saveAll(Set.of(roleAdmin, roleUser));
 //             Users
             UserEntity userNahuel = UserEntity.builder()
                     .username("nahuel")
@@ -52,7 +57,20 @@ public class BackendApplication {
                     .roleList(Set.of(roleAdmin))
                     .build();
 
-            userRepository.saveAll(Set.of(userNahuel));
+            UserEntity userSantiago = UserEntity.builder()
+                    .username("santiago")
+                    .password("$2a$10$qPrR5uHESStyupvTa2kA3uFOhKmRdZ4mtIWAKpnEEsFKe/yAikZSa")
+                    .description("c# developer")
+                    .portfolioData(null)
+                    .projects(null)
+                    .isEnabled(true)
+                    .accountNoExpired(true)
+                    .accountNoLocked(true)
+                    .credentialNoExpired(true)
+                    .roleList(Set.of(roleUser))
+                    .build();
+
+            userRepository.saveAll(Set.of(userNahuel, userSantiago));
         };
     }
 }

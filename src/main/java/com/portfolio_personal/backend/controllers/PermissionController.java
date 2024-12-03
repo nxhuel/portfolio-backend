@@ -11,17 +11,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1")
-//@PreAuthorize("denyAll()")
+@PreAuthorize("denyAll()")
 public class PermissionController {
     @Autowired
     private PermissionServiceImpl permissionService;
 
     @GetMapping("/permissions")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<PermissionEntity>> getPermissionList() {
         return ResponseEntity.ok(permissionService.getPermissionList());
     }
 
     @GetMapping("/permission/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PermissionEntity> getPermission(@PathVariable Long id) {
         return permissionService.getPermission(id)
                 .map(ResponseEntity::ok)
@@ -29,18 +31,21 @@ public class PermissionController {
     }
 
     @PostMapping("/create-permission")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PermissionEntity> createPermission(@RequestBody PermissionEntity permission) {
         PermissionEntity createdPermission = permissionService.createPermission(permission);
         return ResponseEntity.ok(createdPermission);
     }
 
     @PutMapping("/update-permission/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PermissionEntity> updatePermission(@PathVariable Long id, @RequestBody PermissionEntity permission) {
         PermissionEntity updatedPermission = permissionService.updatePermission(id, permission);
         return ResponseEntity.ok(updatedPermission);
     }
 
     @DeleteMapping("/delete-permission/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PermissionEntity> deletePermission(@PathVariable Long id) {
         permissionService.deletePermission(id);
         return ResponseEntity.noContent().build();

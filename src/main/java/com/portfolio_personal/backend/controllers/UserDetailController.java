@@ -6,6 +6,7 @@ import com.portfolio_personal.backend.service.Impl.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@PreAuthorize("permitAll()")
 public class UserDetailController {
 
     @Autowired
     private UserDetailServiceImpl userDetailService;
 
     @GetMapping("/user/{username}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<String> getUserDetails(@PathVariable String username) {
         UserDetails userDetails = userDetailService.loadUserByUsername(username);
 
